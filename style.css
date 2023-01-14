@@ -1,0 +1,18 @@
+
+.pw {
+  display: flex;
+}
+
+.pw .password {
+  height: 40px;
+}
+
+.pw .btn {
+  box-shadow: 0;
+  background-size: 100%;
+  margin: 0;
+  border-radius: 0 0.5rem 0.5rem 0;
+  height: 40px;
+  position: relative;
+  right: 5px;
+}

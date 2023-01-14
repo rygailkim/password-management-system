@@ -33,6 +33,7 @@
   <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css">
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -134,8 +135,10 @@
               </div>
               <div class="form-group">
                   <label for="example-password-input" class="form-control-label">Password</label>
-                  <input class="form-control" type="password" value="" id="example-password-input">
-                  <i class="bi bi-eye-slash" id="togglePassword"></i>
+                  <div class="mb-3 pw">
+                    <input type="password" class="form-control password" id="password" aria-label="Password" aria-describedby="password-addon">
+                    <button class="input-group-button btn btn-light border password_show" id="password_show" type="button" onclick="toggle_password()"><i class="fa fa-eye-slash"></i></button>
+                  </div>
               </div>
               <div class="form-group">
                 <label for="example-text-input" class="form-control-label">Account Name</label>
@@ -157,15 +160,19 @@
                   <option>Others</option>
                 </select>
               </div>
+              <div class="form-group">
+                <label for="exampleFormControlTextarea1">Description/Notes</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+              </div>
               <div class="row mt-6">
                 <div class="col">
                   <div class="text-center">
-                    <button type="button" class="btn bg-gradient-success w-100" onclick="">Add Account</button>
+                    <button type="button" class="btn bg-gradient-success w-100" onclick="">Save Changes</button>
                   </div>
                 </div>
                 <div class="col">
                   <div class="text-center">
-                    <button type="button" class="btn bg-gradient-secondary w-100" onclick="">Cancel</button>
+                    <button type="button" class="btn bg-gradient-danger w-100" onclick="">Delete Account</button>
                   </div>
                 </div>
               </div>
@@ -208,7 +215,7 @@
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
   <!-- Custom JS -->
-  <script src="../assets/js/script.js"></script>
+  <script src="../script.js"></script>
 </body>
 
 </html>
