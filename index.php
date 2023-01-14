@@ -1,38 +1,4 @@
-
-
-
-<!--
-=========================================================
-* Soft UI Dashboard - v1.0.7
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
-
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-<link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png">
-<link rel="icon" type="image/png" href="./assets/img/favicon.png">
-
-<title>
-
-   Locker | Password Management System
-
-</title>
-
-
+<?php include('./partials/header.php') ?>
 
 <!--     Fonts and icons     -->
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -50,14 +16,7 @@
 
 
 <link id="pagestyle" href="./assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
-
-
-
-
-
   </head>
-
-
   <body class="">
     
     <main class="main-content  mt-0">
@@ -72,12 +31,12 @@
                     <p class="mb-0">Locker is a password management system made in HTML, CSS, JavaScript, PHP, and MySQL. Once you've logged into the password manager using a 'master' password, it will store your passwords for all your online accounts.</p>
                   </div>
                   <div class="card-body">
-                    <button type="button" class="btn bg-gradient-info w-100 mt-4 mb-0" onclick="window.location='./pages/sign-in.html';">Sign in</button>    
+                    <button type="button" class="btn bg-gradient-info w-100 mt-4 mb-0" onclick="window.location='./pages/sign-in.php';">Sign in</button>    
                   </div>
                   <div class="card-footer text-center pt-0 px-lg-2 px-1">
                     <p class="mb-4 text-sm mx-auto">
                       Don't have an account?
-                      <a href="./pages/sign-up.html" class="text-info text-gradient font-weight-bold">Sign up</a>
+                      <a href="./pages/sign-up.php" class="text-info text-gradient font-weight-bold">Sign up</a>
                     </p>
                   </div>
                 </div>
