@@ -1,3 +1,9 @@
+<?php
+require_once('../database.php');
+$users = $database->login();
+
+?>
+
 <?php include('../partials/header.php') ?>
 
 <body class="">
@@ -14,14 +20,14 @@
                   <p class="mb-0">Enter your email and password to sign in</p>
                 </div>
                 <div class="card-body">
-                  <form role="form" id="login-form" method="POST">
-                    <label>Email</label>
+                  <form role="form" id="login-form" action="" method="post">
+                    <label>Username</label>
                     <div class="mb-3">
-                      <input type="email" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="email-addon">
+                      <input type="text" class="form-control" name="username" id="username" placeholder="Username" aria-label="Username" aria-describedby="text-addon">
                     </div>
                     <label>Password</label>
                     <div class="mb-3 pw">
-                      <input type="password" class="form-control password" id="password" placeholder="Password" aria-label="Password" aria-describedby="password-addon">
+                      <input type="password" class="form-control password" name="password" id="password" placeholder="Password" aria-label="Password" aria-describedby="password-addon">
                       <button class="input-group-button btn btn-light border password_show" id="password_show" type="button" onclick="toggle_password()"><i class="fa fa-eye-slash"></i></button>
                     </div>
                     <!-- <div class="form-check form-switch">
@@ -29,7 +35,7 @@
                       <label class="form-check-label" for="rememberMe">Remember me</label>
                     </div> -->
                     <div class="text-center">
-                      <button type="button" class="btn bg-gradient-info w-100 mt-4 mb-0" onclick="window.location='./dashboard.php';">Sign in</button>
+                      <button type="submit" name="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">Sign in</button>
                     </div>
                   </form>
                 </div>
