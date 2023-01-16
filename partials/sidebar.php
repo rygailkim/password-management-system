@@ -1,3 +1,15 @@
+<?php 
+require '../config.php';
+
+if(!empty($_SESSION["id"])){
+  $id = $_SESSION["id"];
+  $result = mysqli_query($conn, "SELECT * FROM users WHERE id = $id");
+  $row = mysqli_fetch_assoc($result);
+} else {
+    header("Location: ../index.php");
+}
+?>
+
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 " id="sidenav-main">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
@@ -52,6 +64,6 @@
       </ul>
     </div>
     <div class="sidenav-footer mx-3 ">
-      <a class="btn bg-gradient-primary mt-3 w-100" href="../index.php">Sign Out</a>
+      <a class="btn bg-gradient-primary mt-3 w-100" href="../pages/logout.php">Sign Out</a>
     </div>
   </aside>
