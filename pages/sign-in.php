@@ -1,6 +1,31 @@
 
 
-<?php include('../partials/header.php') ?>
+<?php
+require '../config.php';
+if(isset($_POST["submit"])){
+  $username = $_POST["username"];
+  $password = $_POST["password"];
+  $result = mysqli_query($conn, "SELECT * FROM users WHERE username='$username'");
+  $row = mysqli_fetch_assoc($result);
+  
+  // if username exists in the database
+  if(mysqli_num_rows($result) > 0){
+    // if password is correct
+    if($password == $row["password"]){
+      $_SESSION["login"] = true;
+      $_SESSION["id"] = $row["id"];
+      header("Location: dashboard.php");
+    } else {
+      echo "<script> alert('Password is incorrect. Please try again.')</script>";
+    }
+  } else {
+    echo "<script> alert('User is not registered.')</script>";
+  }
+}
+
+include('../partials/header.php')
+
+?>
 
 <body class="">
   
@@ -13,10 +38,10 @@
               <div class="card card-plain mt-8">
                 <div class="card-header pb-0 text-left bg-transparent">
                   <h3 class="font-weight-bolder text-info text-gradient">Welcome back</h3>
-                  <p class="mb-0">Enter your email and password to sign in</p>
+                  <p class="mb-0">Enter your username and password to sign in.</p>
                 </div>
                 <div class="card-body">
-                  <form role="form" id="login-form" action="" method="post">
+                  <form role="form" id="login-form" action="" method="post" autocomplete="off">
                     <label>Username</label>
                     <div class="mb-3">
                       <input type="text" class="form-control" name="username" id="username" placeholder="Username" aria-label="Username" aria-describedby="text-addon">
