@@ -12,3 +12,16 @@ function toggle_password(){
         state=true;
     }
 }
+
+function toggle_confirmpassword(){
+    if(state){
+        document.getElementById("confirmpassword").setAttribute("type","password");
+        document.getElementById("confirmpassword_show").innerHTML = "<i class='fa fa-eye-slash'></i>"
+        state=false;
+    }
+    else {
+        document.getElementById("confirmpassword").setAttribute("type","text");
+        document.getElementById("confirmpassword_show").innerHTML = "<i class='fa fa-eye'></i>"
+        state=true;
+    }
+}

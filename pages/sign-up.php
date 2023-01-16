@@ -1,6 +1,27 @@
 <?php
-require_once('../database.php');
-$database->add_user();
+require '../config.php';
+if(isset($_POST['submit'])){
+  $username = $_POST['username'];
+  $password = $_POST['password'];
+  $confirmpassword = $_POST['confirmpassword'];
+  $duplicate = mysqli_query($conn, "SELECT * FROM tb_user WHERE username = '$username'");
+  if(mysqli_num_rows($duplicate) > 0){
+    echo
+    "<script>alert('Username has already been taken.')</script>";
+  } else {
+    if ($password ==  $confirmpassword) {
+      $query = "INSERT INTO users(`username`, `password`, `confirmpassword`) VALUES(?,?,?)";
+      mysqli_query($conn,$query);
+      echo
+      "<script> alert('Registration Successful!');</script>";
+    } else {
+      "<script> alert('Passwords does not match.');</script>";
+    }
+  }
+}
+
+
+
 ?>
 
 <?php include('../partials/header.php') ?>
@@ -76,9 +97,13 @@ $database->add_user();
                     <input type="text" class="form-control" name="username" id="username" placeholder="Username" aria-label="Username" aria-describedby="email-addon">
                   </div>
                   <div class="mb-3 pw">
-                      <input type="password" class="form-control password" name="password" id="password" placeholder="Password" aria-label="Password" aria-describedby="password-addon">
-                      <button class="input-group-button btn btn-light border password_show" id="password_show" type="button" onclick="toggle_password()"><i class="fa fa-eye-slash"></i></button>
-                    </div>
+                    <input type="password" class="form-control password" name="password" id="password" placeholder="Password" aria-label="Password" aria-describedby="password-addon">
+                    <button class="input-group-button btn btn-light border password_show" id="password_show" type="button" onclick="toggle_password()"><i class="fa fa-eye-slash"></i></button>
+                  </div>
+                  <div class="mb-3 pw">
+                    <input type="password" class="form-control password" name="confirmpassword" id="confirmpassword" placeholder="Confirm Password" aria-label="Password" aria-describedby="password-addon">
+                    <button class="input-group-button btn btn-light border password_show" id="confirmpassword_show" type="button" onclick="toggle_confirmpassword()"><i class="fa fa-eye-slash"></i></button>
+                  </div>
                   <!-- <div class="form-check form-check-infso text-left">s
                     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked>
                     <label class="form-check-label" for="flexCheckDefault">

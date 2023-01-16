@@ -52,16 +52,56 @@ Class Database {
             $connection = $this->openConnection();
             $stmt = $connection->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
             $stmt->execute([$username, $password]);
+            $user = $stmt->fetch();
             $total = $stmt->rowCount();
 
             if($total > 0){
                 echo "Login Success!";
+                $this->set_userdata($user);
             } else {
                 echo "Login Failed!";
             }
         }
     }
 
+    public function logout()
+    {
+        if (!isset($_SESSION)){
+            session_start();
+        }
+
+        $_SESSION['userdata'] = null;
+        unset($_SESSION['userdata']);
+    }
+
+    public function set_userdata($array)
+    {
+        if(!isset($_SESSION)) {
+            session_start();
+        }
+
+        $_SESSION['userdata'] = array(
+            "username" => $array['username']
+        );
+
+        return $_SESSION['userdata'];
+    }
+
+    public function get_userdata()
+    {
+        if (!isset($_SESSION)){
+            session_start();
+        }
+
+        if(isset($_SESSION['userdata']))
+        {
+            return $_SESSION['userdata'];
+        } else {
+            return null;
+        }
+        
+    }
+    
     public function check_user_exist($username)
     {
         $connection = $this->openConnection();

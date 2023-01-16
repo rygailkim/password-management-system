@@ -1,8 +1,5 @@
 <?php
-require_once('database.php');
-$users = $database->getUsers();
 
-print_r($users)
 ?>
 
 <?php include('./partials/header.php') ?>

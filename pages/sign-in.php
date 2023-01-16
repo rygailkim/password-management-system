@@ -2,6 +2,7 @@
 require_once('../database.php');
 $users = $database->login();
 
+
 ?>
 
 <?php include('../partials/header.php') ?>
