@@ -1,60 +1,10 @@
 
 
 <?php
-
-// Check existence of id parameter before processing further
-if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
-  // Include config file
-  require_once "config.php";
-  
-  // Prepare a select statement
-  $sql = "SELECT * FROM employees WHERE id = ?";
-  
-  if($stmt = mysqli_prepare($link, $sql)){
-      // Bind variables to the prepared statement as parameters
-      mysqli_stmt_bind_param($stmt, "i", $param_id);
-      
-      // Set parameters
-      $param_id = trim($_GET["id"]);
-      
-      // Attempt to execute the prepared statement
-      if(mysqli_stmt_execute($stmt)){
-          $result = mysqli_stmt_get_result($stmt);
-  
-          if(mysqli_num_rows($result) == 1){
-              /* Fetch result row as an associative array. Since the result set
-              contains only one row, we don't need to use while loop */
-              $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-              
-              // Retrieve individual field value
-              $name = $row["name"];
-              $address = $row["address"];
-              $salary = $row["salary"];
-          } else{
-              // URL doesn't contain valid id parameter. Redirect to error page
-              echo "Something's wrong with the query: " . mysqli_error($link);
-              exit();
-          }
-          
-      } else{
-          echo "Oops! Something went wrong. Please try again later.";
-      }
-  }
-   
-  // Close statement
-  mysqli_stmt_close($stmt);
-  
-  // Close connection
-  mysqli_close($link);
-} else{
-  // URL doesn't contain id parameter. Redirect to error page
-  echo "Something's wrong with the query: " . mysqli_error($link);
-  exit();
-}
-
+// Include config file
+require_once "../config.php";
 
 include('../partials/header.php')
-
 ?>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -76,196 +26,66 @@ include('../partials/header.php')
                 <table class="table align-items-center justify-content-center mb-0">
                   <thead>
                     <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Account</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Username/Email</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Account</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Site URL</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Username</th>
                       <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Password</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Category</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Category</th>
                       <th></th>
                       <th></th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2">
-                          <div>
-                            <img src="../assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm rounded-circle me-2" alt="spotify">
-                          </div>
-                          <div class="my-auto">
-                            <h6 class="mb-0 text-sm">Spotify</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <p class="text-sm font-weight-bold mb-0">sample@email.com</p>
-                      </td>
-                      <td>
-                        <span class="text-sm font-weight-bold">password-sample</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-sm font-weight-bold">Account Category</span>
-                      </td>
-                      <td class="align-middle">
-                         <a href="./account.php" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                          Edit
-                        </a>
-                      </td>
-                      <td class="align-middle">
-                        <a href="#" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                         Open
-                       </a>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2">
-                          <div>
-                            <img src="../assets/img/small-logos/logo-invision.svg" class="avatar avatar-sm rounded-circle me-2" alt="invision">
-                          </div>
-                          <div class="my-auto">
-                            <h6 class="mb-0 text-sm">InVision</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <p class="text-sm font-weight-bold mb-0">sample@email.com</p>
-                      </td>
-                      <td>
-                        <span class="text-sm font-weight-bold">password-sample</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-sm font-weight-bold">Account Category</span>
-                      </td>
-                      <td class="align-middle">
-                         <a href="./account.php" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                          Edit
-                        </a>
-                      </td>
-                      <td class="align-middle">
-                        <a href="#" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                         Open
-                       </a>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2">
-                          <div>
-                            <img src="../assets/img/small-logos/logo-jira.svg" class="avatar avatar-sm rounded-circle me-2" alt="jira">
-                          </div>
-                          <div class="my-auto">
-                            <h6 class="mb-0 text-sm">Jira</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <p class="text-sm font-weight-bold mb-0">$3,400</p>
-                      </td>
-                      <td>
-                        <span class="text-sm font-weight-bold">canceled</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-sm font-weight-bold">Account Category</span>
-                      </td>
-                      <td class="align-middle">
-                         <a href="./account.php" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                          Edit
-                        </a>
-                      </td>
-                      <td class="align-middle">
-                        <a href="#" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                         Open
-                       </a>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2">
-                          <div>
-                            <img src="../assets/img/small-logos/logo-slack.svg" class="avatar avatar-sm rounded-circle me-2" alt="slack">
-                          </div>
-                          <div class="my-auto">
-                            <h6 class="mb-0 text-sm">Slack</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <p class="text-sm font-weight-bold mb-0">$1,000</p>
-                      </td>
-                      <td>
-                        <span class="text-sm font-weight-bold">canceled</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-sm font-weight-bold">Account Category</span>
-                      </td>
-                      <td class="align-middle">
-                         <a href="./account.php" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                          Edit
-                        </a>
-                      </td>
-                      <td class="align-middle">
-                        <a href="#" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                         Open
-                       </a>
-                     </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2">
-                          <div>
-                            <img src="../assets/img/small-logos/logo-webdev.svg" class="avatar avatar-sm rounded-circle me-2" alt="webdev">
-                          </div>
-                          <div class="my-auto">
-                            <h6 class="mb-0 text-sm">Webdev</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <p class="text-sm font-weight-bold mb-0">$14,000</p>
-                      </td>
-                      <td>
-                        <span class="text-sm font-weight-bold">working</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-sm font-weight-bold">Account Category</span>
-                      </td>
-                      <td class="align-middle">
-                         <a href="./account.php" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                          Edit
-                        </a>
-                      </td>
-                      <td class="align-middle">
-                        <a href="#" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                         Open
-                       </a>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2">
-                          <div>
-                            <img src="../assets/img/small-logos/logo-xd.svg" class="avatar avatar-sm rounded-circle me-2" alt="xd">
-                          </div>
-                          <div class="my-auto">
-                            <h6 class="mb-0 text-sm">Adobe XD</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <p class="text-sm font-weight-bold mb-0">$2,300</p>
-                      </td>
-                      <td>
-                        <span class="text-sm font-weight-bold">done</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-sm font-weight-bold">Account Category</span>
-                      </td>
-                      <td class="align-middle">
-                         <a href="./account.php" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                          Edit
-                        </a>
-                      </td>
-                      <td class="align-middle">
-                        <a href="#" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                         Open
-                       </a>
-                    </tr>
+                    <?php
+
+                    $sql = "SELECT * FROM accounts";
+                    if ($result = mysqli_query($link, $sql))
+                    {
+                        if(mysqli_num_rows($result) > 0)
+                        {
+                          while($row = mysqli_fetch_array($result)){
+                            echo "<tr>";
+
+                            // name column
+                            echo "<td class='align-middle'>" . "<div class='d-flex px-2'>"."<div class='my-auto'>";
+                            echo "<h6 class='text-sm'>".$row['name']."</h6>"."</div>"."</div>"."</td>";
+
+                            // site column
+                            echo "<td class='align-middle'>"."<p class='text-sm font-weight-bold'>".$row['site']."</p>"."</td>";
+                            
+                            // username column
+                            echo "<td class='align-middle'>"."<p class='text-sm font-weight-bold'>".$row['username']."</p>"."</td>";
+                            
+                            // password column
+                            echo "<td class='align-middle'>"."<p class='text-sm font-weight-bold'>".$row['password']."</p>"."</td>";
+                            
+                            // category column
+                            echo "<td class='align-middle'>"."<p class='text-sm font-weight-bold'>".$row['category']."</p>"."</td>";
+
+                            // view button
+                            echo "<td class='align-middle'>";
+                            echo "<a href='./account.php' class='text-sm font-weight-bold text-xs' data-toggle='tooltip' data-original-title='Edit user'>";
+                            echo "View"."</a>"."</td>";
+
+                            // edit/delete button
+                            echo "<td class='align-middle'>";
+                            echo "<a href='./account.php' class='text-sm font-weight-bold text-xs' data-toggle='tooltip' data-original-title='Edit user'>";
+                            echo "Edit"."</a>"."</td>";
+                
+                            echo "</tr>";
+                          }
+                          mysqli_free_result($result);
+                        }
+                        else {
+                          echo '<div class="alert alert-danger"><em>No records were found.</em></div>';
+                        }
+                    } else{
+                      echo "Oops! Something went wrong. Please try again later.";
+                    }
+
+                    // Close connection
+                    mysqli_close($link);
+                    ?>
                   </tbody>
                 </table>
               </div>
