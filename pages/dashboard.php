@@ -1,6 +1,18 @@
 
 
-<?php include('../partials/header.php') ?>
+<?php
+
+// Initialize the session
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to sign-in page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: sign-in.php");
+    exit;
+}
+include('../partials/header.php')
+
+?>
 
 <body class="g-sidenav-show  bg-gray-100">
   <?php include('../partials/sidebar.php') ?>

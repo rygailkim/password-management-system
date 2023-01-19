@@ -1,13 +1,6 @@
 <?php 
 require '../config.php';
 
-if(!empty($_SESSION["id"])){
-  $id = $_SESSION["id"];
-  $result = mysqli_query($conn, "SELECT * FROM users WHERE id = $id");
-  $row = mysqli_fetch_assoc($result);
-} else {
-    header("Location: ../index.php");
-}
 ?>
 
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 " id="sidenav-main">

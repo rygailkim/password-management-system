@@ -1,37 +1,93 @@
-
-
 <?php
-require '../config.php';
-
-// if user is logged in, redirect to dashboard
-if(!empty($_SESSION["id"])){
-  header("Location: dashboard.php");
+session_start();
+ 
+// Check if the user is already logged in, if yes then redirect him to welcome page
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+    header("location: dashboard.php");
+    exit;
 }
 
+require_once '../config.php';
 
-if(isset($_POST["submit"])){
-  $username = $_POST["username"];
-  $password = $_POST["password"];
-  $result = mysqli_query($conn, "SELECT * FROM users WHERE username='$username'");
-  $row = mysqli_fetch_assoc($result);
-  
-  // if username exists in the database
-  if(mysqli_num_rows($result) > 0){
-    // if password is correct
-    if($password == $row["password"]){
-      $_SESSION["login"] = true;
-      $_SESSION["id"] = $row["id"];
-      header("Location: dashboard.php");
-    } else {
-      echo "<script> alert('Password is incorrect. Please try again.')</script>";
+// Define variables and initialize with empty values
+$username = $password = "";
+$username_err = $password_err = $login_err = "";
+ 
+// Processing form data when form is submitted
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+ 
+    // Check if username is empty
+    if(empty(trim($_POST["username"]))){
+        $username_err = "Please enter username.";
+    } else{
+        $username = trim($_POST["username"]);
     }
-  } else {
-    echo "<script> alert('User is not registered.')</script>";
-  }
+    
+    // Check if password is empty
+    if(empty(trim($_POST["password"]))){
+        $password_err = "Please enter your password.";
+    } else{
+        $password = trim($_POST["password"]);
+    }
+    
+    // Validate credentials
+    if(empty($username_err) && empty($password_err)){
+        // Prepare a select statement
+        $sql = "SELECT id, username, password FROM users WHERE username = ?";
+        
+        if($stmt = mysqli_prepare($link, $sql)){
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "s", $param_username);
+            
+            // Set parameters
+            $param_username = $username;
+            
+            // Attempt to execute the prepared statement
+            if(mysqli_stmt_execute($stmt)){
+                // Store result
+                mysqli_stmt_store_result($stmt);
+                
+                // Check if username exists, if yes then verify password
+                if(mysqli_stmt_num_rows($stmt) == 1){                    
+                    // Bind result variables
+                    mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
+                    if(mysqli_stmt_fetch($stmt)){
+                        if(password_verify($password, $hashed_password)){
+                            // Password is correct, so start a new session
+                            session_start();
+                            
+                            // Store data in session variables
+                            $_SESSION["loggedin"] = true;
+                            $_SESSION["id"] = $id;
+                            $_SESSION["username"] = $username;                            
+                            
+                            // Redirect user to welcome page
+                            header("location: dashboard.php");
+                        } else{
+                            // Password is not valid, display a generic error message
+                            $login_err = "Invalid username or password.";
+                            echo '<script>alert("Invalid username or password.")</script>';
+                        }
+                    }
+                } else{
+                    // Username doesn't exist, display a generic error message
+                    $login_err = "Invalid username or password.";
+                    echo '<script>alert("Invalid username or password.")</script>';
+                }
+            } else{
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+
+            // Close statement
+            mysqli_stmt_close($stmt);
+        }
+    }
+    
+    // Close connection
+    mysqli_close($link);
 }
 
 include('../partials/header.php')
-
 ?>
 
 <body class="">
@@ -48,14 +104,16 @@ include('../partials/header.php')
                   <p class="mb-0">Enter your username and password to sign in.</p>
                 </div>
                 <div class="card-body">
-                  <form role="form" id="login-form" action="" method="post" autocomplete="off">
+                  <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" autocomplete="off">
                     <label>Username</label>
                     <div class="mb-3">
-                      <input type="text" class="form-control" name="username" id="username" placeholder="Username" aria-label="Username" aria-describedby="text-addon">
+                      <input type="text" name="username" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>">
+                      <span class="invalid-feedback"><?php echo $username_err; ?></span>
                     </div>
                     <label>Password</label>
                     <div class="mb-3 pw">
-                      <input type="password" class="form-control password" name="password" id="password" placeholder="Password" aria-label="Password" aria-describedby="password-addon">
+                      <input type="password" name="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>">
+                      <span class="invalid-feedback"><?php echo $password_err; ?></span>
                       <button class="input-group-button btn btn-light border password_show" id="password_show" type="button" onclick="toggle_password()"><i class="fa fa-eye-slash"></i></button>
                     </div>
                     <!-- <div class="form-check form-switch">

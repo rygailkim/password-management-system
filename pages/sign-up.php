@@ -2,34 +2,128 @@
 require '../config.php';
 include '../partials/header.php';
 
+// Define variables and initialize with empty values
+$username = $password = $confirm_password = "";
+$username_err = $password_err = $confirm_password_err = "";
+
 // if user is logged in, redirect to dashboard
 if(!empty($_SESSION["id"])){
   header("Location: dashboard.php");
 }
 
-if(isset($_POST["submit"])){
-  $username = $_POST["username"];
-  $password = $_POST["password"];
-  $confirmpassword = $_POST["confirmpassword"];
+// if(isset($_POST["submit"])){
+//   $username = $_POST["username"];
+//   $password = $_POST["password"];
+//   $confirmpassword = $_POST["confirmpassword"];
 
-  // check if username already exists in database
-  $duplicate = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");
-  if (mysqli_num_rows($duplicate) > 0) {
-    echo "<script> alert('Username has already been taken. Please choose another one.')</script>";
-  } else {
-    // password is the same with confirm password then insert user into database
-    if ($password == $confirmpassword)
-    {
-      $query = "INSERT INTO users VALUES('', '$username', '$password', '$confirmpassword', '')";
-      mysqli_query($conn,$query);
-      echo "<script> alert('Registration successful!')</script>";
-    } else {
-      echo "<script> alert('Passwords do not match.')</script>";
-    }
+//   // check if username already exists in database
+//   $duplicate = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");
+//   if (mysqli_num_rows($duplicate) > 0) {
+//     echo "<script> alert('Username has already been taken. Please choose another one.')</script>";
+//   } else {
+//     // password is the same with confirm password then insert user into database
+//     if ($password == $confirmpassword)
+//     {
+//       $query = "INSERT INTO users VALUES('', '$username', '$password', '$confirmpassword', '')";
+//       mysqli_query($conn,$query);
+//       echo "<script> alert('Registration successful!')</script>";
+//     } else {
+//       echo "<script> alert('Passwords do not match.')</script>";
+//     }
+//   }
+// }
+
+
+// Processing form data when form is submitted
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+ 
+  // Validate username
+  if(empty(trim($_POST["username"]))){
+      $username_err = "Please enter a username.";
+  } elseif(!preg_match('/^[a-zA-Z0-9_]+$/', trim($_POST["username"]))){
+      $username_err = "Username can only contain letters, numbers, and underscores.";
+  } else{
+      // Prepare a select statement
+      $sql = "SELECT id FROM users WHERE username = ?";
+      
+      if($stmt = mysqli_prepare($link, $sql)){
+          // Bind variables to the prepared statement as parameters
+          mysqli_stmt_bind_param($stmt, "s", $param_username);
+          
+          // Set parameters
+          $param_username = trim($_POST["username"]);
+          
+          // Attempt to execute the prepared statement
+          if(mysqli_stmt_execute($stmt)){
+              /* store result */
+              mysqli_stmt_store_result($stmt);
+              
+              if(mysqli_stmt_num_rows($stmt) == 1){
+                  $username_err = "This username is already taken.";
+              } else{
+                  $username = trim($_POST["username"]);
+              }
+          } else{
+              echo "Oops! Something went wrong. Please try again later.";
+          }
+
+          // Close statement
+          mysqli_stmt_close($stmt);
+      }
   }
+  
+  // Validate password
+  if(empty(trim($_POST["password"]))){
+      $password_err = "Please enter a password.";     
+  } elseif(strlen(trim($_POST["password"])) < 6){
+      $password_err = "Password must have atleast 6 characters.";
+  } else{
+      $password = trim($_POST["password"]);
+  }
+  
+  // Validate confirm password
+  if(empty(trim($_POST["confirm_password"]))){
+      $confirm_password_err = "Please confirm password.";     
+  } else{
+      $confirm_password = trim($_POST["confirm_password"]);
+      if(empty($password_err) && ($password != $confirm_password)){
+          $confirm_password_err = "Password did not match.";
+      }
+  }
+  
+  // Check input errors before inserting in database
+  if(empty($username_err) && empty($password_err) && empty($confirm_password_err)){
+      
+      // Prepare an insert statement
+      $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+       
+      if($stmt = mysqli_prepare($link, $sql)){
+          // Bind variables to the prepared statement as parameters
+          mysqli_stmt_bind_param($stmt, "ss", $param_username, $param_password);
+          
+          // Set parameters
+          $param_username = $username;
+          $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
+          
+          // Attempt to execute the prepared statement
+          if(mysqli_stmt_execute($stmt)){
+              // Redirect to login page
+              header("location: sign-in.php");
+          } else{
+              echo "Oops! Something went wrong. Please try again later.";
+          }
+
+          // Close statement
+          mysqli_stmt_close($stmt);
+      }
+  }
+  
+  // Close connection
+  mysqli_close($link);
 }
 
 ?>
+
 
 
 <body class="">
@@ -99,11 +193,20 @@ if(isset($_POST["submit"])){
               </div> -->
               <div class="card-body">
                 <form role="form text-left" id="registration-form" action="" method="post">
+                <label>Username</label>
                   <div class="mb-3">
-                    <input type="text" class="form-control" name="username" id="username" placeholder="Username" aria-label="Username" aria-describedby="email-addon">
+                   <input type="text" name="username" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>">
+                   <span class="invalid-feedback"><?php echo $username_err; ?></span>
                   </div>
+                <label>Password</label>
                   <div class="mb-3">
-                    <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password-addon">
+                  <input type="password" name="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $password; ?>">
+                <span class="invalid-feedback"><?php echo $password_err; ?></span>
+                  </div>
+                <label>Confirm Password</label>
+                  <div class="mb-3">
+                  <input type="password" name="confirm_password" class="form-control <?php echo (!empty($confirm_password_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $confirm_password; ?>">
+                  <span class="invalid-feedback"><?php echo $confirm_password_err; ?></span>
                   </div>
                   <!-- <div class="form-check form-check-info text-left">
                     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked>
@@ -112,7 +215,7 @@ if(isset($_POST["submit"])){
                     </label>
                   </div> -->
                   <div class="text-center">
-                    <button type="button" class="btn bg-gradient-dark w-100 my-4 mb-2" onclick="window.location='./sign-in.php';">Sign up</button>
+                    <input type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2" value="Submit">
                   </div>
                   <p class="text-sm mt-3 mb-0">Already have an account? <a href="./sign-in.php" class="text-dark font-weight-bolder">Sign in</a></p>
                 </form>
