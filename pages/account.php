@@ -1,4 +1,62 @@
-<?php include('../partials/header.php') ?>
+<?php
+// Check existence of id parameter before processing further
+if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
+    // Include config file
+    require_once "../config.php";
+    
+    // Prepare a select statement
+    $sql = "SELECT * FROM accounts WHERE id = ?";
+    
+    if($stmt = mysqli_prepare($link, $sql)){
+        // Bind variables to the prepared statement as parameters
+        mysqli_stmt_bind_param($stmt, "i", $param_id);
+        
+        // Set parameters
+        $param_id = trim($_GET["id"]);
+        
+        // Attempt to execute the prepared statement
+        if(mysqli_stmt_execute($stmt)){
+            $result = mysqli_stmt_get_result($stmt);
+    
+            if(mysqli_num_rows($result) == 1){
+                /* Fetch result row as an associative array. Since the result set
+                contains only one row, we don't need to use while loop */
+                $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                
+                // Retrieve individual field value
+                $username = $row["username"];
+                $password = $row["password"];
+                $name = $row["name"];
+                $site = $row["site"];
+                $category = $row["category"];
+                $description = $row["description"];
+            } else{
+                // URL doesn't contain valid id parameter. Redirect to error page
+                echo "Oops! URL doesn't exist.";
+                exit();
+            }
+            
+        } else{
+            echo "Oops! Something went wrong. Please try again later.";
+        }
+
+        // Close statement
+        mysqli_stmt_close($stmt);
+    } else {
+      echo "Something's wrong with the query: " . mysqli_error($link);
+    }
+
+    // Close connection
+    mysqli_close($link);
+} else{
+    // URL doesn't contain id parameter. Redirect to error page
+    echo "URL doesn't contain ID parameter.";
+    exit();
+}
+
+include('../partials/header.php')
+
+?>
 
 <body class="g-sidenav-show  bg-gray-100">
   <?php include('../partials/sidebar.php') ?>
@@ -10,57 +68,38 @@
       <div class="row">
         <div class="col-12">
           <div class="card p-4">
-            <form>
               <div class="form-group">
                   <label for="example-text-input" class="form-control-label">Username/Email</label>
-                  <input class="form-control" type="text" value="" id="example-text-input">
+                  <p><?php echo $row["username"]; ?></p>
               </div>
               <div class="form-group">
                   <label for="example-password-input" class="form-control-label">Password</label>
                   <div class="mb-3 pw">
-                    <input type="password" class="form-control password" id="password" aria-label="Password" aria-describedby="password-addon">
-                    <button class="input-group-button btn btn-light border password_show" id="password_show" type="button" onclick="toggle_password()"><i class="fa fa-eye-slash"></i></button>
+                  <p><?php echo $row["password"]; ?></p>
                   </div>
               </div>
               <div class="form-group">
                 <label for="example-text-input" class="form-control-label">Account Name</label>
-                <input class="form-control" type="text" value="" id="example-text-input">
+                <p><?php echo $row["name"]; ?></p>
               </div>
               <div class="form-group">
                 <label for="example-url-input" class="form-control-label">Account URL</label>
-                <input class="form-control" type="url" value="" id="example-url-input">
+                <p><?php echo $row["site"]; ?></p>
               </div>
               <div class="form-group">
                 <label for="exampleFormControlSelect1">Account Category</label>
-                <select class="form-control" id="exampleFormControlSelect1">
-                  <option>Social</option>
-                  <option>School</option>
-                  <option>Work</option>
-                  <option>Productivity</option>
-                  <option>Finance</option>
-                  <option>Shopping</option>
-                  <option>Others</option>
-                </select>
+                <p><?php echo $row["category"]; ?></p>
               </div>
               <div class="form-group">
                 <label for="exampleFormControlTextarea1">Description/Notes</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <p><?php echo $row["description"]; ?></p>
               </div>
-              <div class="row mt-6">
-                <div class="col">
-                  <div class="text-center">
-                    <button type="button" class="btn bg-gradient-success w-100" onclick="">Save Changes</button>
-                  </div>
-                </div>
-                <div class="col">
-                  <div class="text-center">
-                    <button type="button" class="btn bg-gradient-danger w-100" onclick="">Delete Account</button>
-                  </div>
-                </div>
-              </div>
-          </form>
+
+              <a href="dashboard.php" class="btn btn-primary">Back</a>
           </div>
         </div>
+
+        
       </div>
       <footer class="footer pt-3  ">
         <div class="container-fluid">

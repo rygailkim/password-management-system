@@ -63,13 +63,13 @@ include('../partials/header.php')
                             echo "<td class='align-middle'>"."<p class='text-sm font-weight-bold'>".$row['category']."</p>"."</td>";
 
                             // view button
-                            echo "<td class='align-middle'>";
-                            echo "<a href='./account.php' class='text-sm font-weight-bold text-xs' data-toggle='tooltip' data-original-title='Edit user'>";
+                            echo "<td class='align-middle'>"; 
+                            echo '<a href="./account.php?id='. $row['id'] .'" class="text-sm font-weight-bold text-xs" title="View Record" data-toggle="tooltip">';
                             echo "View"."</a>"."</td>";
 
                             // edit/delete button
                             echo "<td class='align-middle'>";
-                            echo "<a href='./account.php' class='text-sm font-weight-bold text-xs' data-toggle='tooltip' data-original-title='Edit user'>";
+                            echo '<a href="./edit-account.php?id='. $row['id'] .'" class="text-sm font-weight-bold text-xs" title="Edit Record" data-toggle="tooltip">';
                             echo "Edit"."</a>"."</td>";
                 
                             echo "</tr>";
